@@ -6,7 +6,7 @@
   
   Synthwave (also called outrun, retrowave, or futuresynth) is an electronic music microgenre that is based predominantly on the music associated with action, science-fiction, and horror film soundtracks of the 1980s. Other influences are drawn from the decade's art and video games. Synthwave musicians often espouse nostalgia for 1980s culture and attempt to capture the era's atmosphere and celebrate it. (from wikipedia)
   
-  I  chose this corpus because I am currently listening to a lot of synthwave music. I also listen to all my music on spotify, so I can use my playlists to build my corpus up quickly. I am also currently working on a synthwave based rythm-game in unity, so exploring this corpus could also help with this side project.
+  I  chose this corpus because I am currently listening to a lot of synthwave music. I also listen to all my music on spotify, so I can use my playlists to build my corpus up quickly. I am also currently working on a synthwave rythm-game in unity, so exploring this corpus could also help with this side project.
 
   # What are the natural groups or comparison points in your corpus and what is expected between them?
   
