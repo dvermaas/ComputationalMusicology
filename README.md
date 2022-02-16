@@ -1,8 +1,8 @@
 # Computational Musicology: Portfolio
 
-<Insert Link> Click here to go to portfolio
+-insert link- Click here to go to portfolio
 
-#What is your corpus, why did you choose it, and what do you think is interesting about it?
+# What is your corpus, why did you choose it, and what do you think is interesting about it?
   
   Synthwave (also called outrun, retrowave, or futuresynth) is an electronic music microgenre that is based predominantly on the music associated with action, science-fiction, and horror film soundtracks of the 1980s. Other influences are drawn from the decade's art and video games. Synthwave musicians often espouse nostalgia for 1980s culture and attempt to capture the era's atmosphere and celebrate it. (from wikipedia)
   
