@@ -1,6 +1,6 @@
 # Computational Musicology: Portfolio
 
--insert link- Click here to go to portfolio
+[DO NOT click here](https://github.com/dvermaas/ComputationalMusicology) to go to portfolio (no portofolio yet).
 
 # What is your corpus, why did you choose it, and what do you think is interesting about it?
   
@@ -10,7 +10,7 @@
 
   # What are the natural groups or comparison points in your corpus and what is expected between them?
   
-  I intent to divide the corpus based on subgenres within synthwave. These subgenres are similar to the subgenres within heavy metal, but likely a lot more subtle. It would therefore be intresting to see if these subgenres are actually detectable within the corpus. I personally do not think there are very significant diferences between syntwve subgenres As a second point of exploration, I want to detect artists. This will probably fit nicely with subgenre detection, because you could imagtne each artist to have their own small subgenre variation.
+  I intent to divide the corpus based on subgenres within synthwave. These subgenres are similar to the subgenres within heavy metal, but likely a lot more subtle. It would therefore be intresting to see if these subgenres are actually detectable within the corpus. I personally do not think there are very significant diferences between most of these subgenres, but we will see if the data agrees with that statement. As a second point of exploration, I want to distinguish between artists. This will probably fit nicely with subgenre detection, because you could imaine each artist's style to be similar to how subgenre styles are defined.
   
   # How representative are the tracks in your corpus for the groups you want to compare?
   
