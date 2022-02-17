@@ -15,3 +15,7 @@
   # How representative are the tracks in your corpus for the groups you want to compare?
   
   I will use a variety of artists and playlists to build the corpus. For subgenre detection I will use playlists with songs for each subgenre. For artist dectection I will include a few albums of synthwave artists that are intresting and feel different, to make the comparison intresting.
+
+# Corpus playlist
+
+  I have yet to finalize the corpus, but I currently have a sample corpus of 50ish songs, which I intend to exand to 200 songs. [Click here](https://open.spotify.com/playlist/58spcwLelMvMpKvObWuwbN?si=df0538d83591480c) to go to the spotify playlist.
