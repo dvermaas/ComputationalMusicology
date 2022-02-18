@@ -1,6 +1,6 @@
 # Computational Musicology: Portfolio
 
-[DO NOT click here](https://github.com/dvermaas/ComputationalMusicology) to go to portfolio (no portofolio yet).
+  [click here](https://dvermaas.github.io/ComputationalMusicology/) to go to the portfolio webpage.
 
 # What is your corpus, why did you choose it, and what do you think is interesting about it?
   
