@@ -18,4 +18,4 @@
 
 # Corpus playlist
 
-  I have yet to finalize the corpus, but I currently have a sample corpus of 50ish songs, which I intend to expand to 200 songs. [Click here](https://open.spotify.com/playlist/58spcwLelMvMpKvObWuwbN?si=df0538d83591480c) to go to the spotify playlist.
+  [Click here](https://open.spotify.com/playlist/58spcwLelMvMpKvObWuwbN?si=df0538d83591480c) to go to the spotify playlist.
