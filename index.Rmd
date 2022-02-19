@@ -1,43 +1,93 @@
 ---
 title: "ComputationalMusicology"
-author: "dvermaas"
+author: "Daniël Vermaas"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+    theme: flatly
 ---
+```{css, include=FALSE}
+/* Set font color of inactive tab to green */
+.nav-tabs-custom .nav-tabs > li > a {
+  color: green;
+} 
+
+/* Set font color of active tab to red */
+.nav-tabs-custom .nav-tabs > li.active > a {
+  color: red;
+} 
+
+/* To set color on hover */
+.nav-tabs-custom .nav-tabs > li.active > a:hover {
+  color: purple;
+}
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Import libraries
-
-```{r}
+```{r, include=FALSE}
+# Modules to import
 library(tidyverse)
 library(spotifyr)
+library(plotly)
 ```
 
-# Import and show corpus
-
-Calling Spotify API to fetch playlist data.
-
-```{r}
+```{r, include=FALSE}
 corpus <- get_playlist_audio_features("", "58spcwLelMvMpKvObWuwbN")
-corpus
+
 ```
 
-# Corpus popularity
+### Corpus Description
 
-Songs do not seem that popular, I wonder how Spotify scores popularity.
+**What is your corpus, why did you choose it, and what do you think is interesting about it?**
 
-```{r}
+Synthwave (also called outrun, retrowave, or futuresynth) is an electronic music microgenre that is based predominantly on the music associated with action, science-fiction, and horror film soundtracks of the 1980s. Other influences are drawn from the decade's art and video games. Synthwave musicians often espouse nostalgia for 1980s culture and attempt to capture the era's atmosphere and celebrate it. (from wikipedia)
+
+I chose this corpus because I am currently listening to a lot of synthwave music. I also listen to all my music on spotify, so I can use my playlists to build my corpus up quickly. I am also currently working on a synthwave rythm-game in unity, so exploring this corpus could also help with this side project.
+
+**What is your corpus, why did you choose it, and what do you think is interesting about it?**
+
+I intent to divide the corpus based on subgenres within synthwave. These subgenres are similar to the subgenres within heavy metal, but likely a lot more subtle. It would therefore be intresting to see if these subgenres are actually detectable within the corpus. I personally do not think there are very significant diferences between most of these subgenres, but we will see if the data agrees with that statement. As a second point of exploration, I want to distinguish between artists. This will probably fit nicely with subgenre detection, because you could imaine each artist's style to be similar to how subgenre styles are defined.
+
+**How representative are the tracks in your corpus for the groups you want to compare?**
+
+I will use a variety of artists and playlists to build the corpus. For subgenre detection I will use playlists with songs for each subgenre. For artist dectection I will include a few albums of synthwave artists that are intresting and feel different, to make the comparison intresting.
+
+[Spotify playlist](https://open.spotify.com/playlist/58spcwLelMvMpKvObWuwbN?si=29590a961a3f4322)
+
+
+
+```{r, echo = FALSE}
+head(corpus)
+```
+
+### Corpus popularity
+
+```{r, echo = FALSE}
 ggplot(corpus, aes(track.popularity)) + geom_histogram(bins=50)
 ```
 
-# Corpus speechiness
+***
+Songs do not seem that popular, I wonder how Spotify scores popularity.
 
-As expected, all songs are very low speechiness (Not many songs contain voice).
+### Corpus speechiness
 
-```{r}
+```{r, echo = FALSE}
 ggplot(corpus, aes(speechiness)) + geom_histogram(bins=50)
 ```
 
+***
+
+As expected, all songs are very low speechiness (Not many songs contain voice).
+
+### Valence
+
+```{r, echo = FALSE}
+ggplot(corpus, aes(valence, energy, color=factor(mode))) + geom_point() + scale_fill_discrete(labels = c("Minor", "Major"))
+```
+
+***
+Very nice.
