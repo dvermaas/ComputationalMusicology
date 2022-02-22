@@ -1,30 +1,15 @@
 ---
-title: "ComputationalMusicology"
+title: "Computational Musicology"
 author: "Daniël Vermaas"
 date: "`r Sys.Date()`"
 output: 
   flexdashboard::flex_dashboard:
     storyboard: true
-    theme: flatly
+    css: styles.css
+    source_code: https://github.com/dvermaas/ComputationalMusicology
 ---
-```{css, include=FALSE}
-/* Set font color of inactive tab to green */
-.nav-tabs-custom .nav-tabs > li > a {
-  color: green;
-} 
 
-/* Set font color of active tab to red */
-.nav-tabs-custom .nav-tabs > li.active > a {
-  color: red;
-} 
-
-/* To set color on hover */
-.nav-tabs-custom .nav-tabs > li.active > a:hover {
-  color: purple;
-}
-```
-
-```{r setup, include=FALSE}
+```{r setup, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -33,11 +18,12 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(spotifyr)
 library(plotly)
+library(knitr)
+library(DT)
 ```
 
 ```{r, include=FALSE}
 corpus <- get_playlist_audio_features("", "58spcwLelMvMpKvObWuwbN")
-
 ```
 
 ### Corpus Description
@@ -50,7 +36,7 @@ I chose this corpus because I am currently listening to a lot of synthwave music
 
 **What is your corpus, why did you choose it, and what do you think is interesting about it?**
 
-I intent to divide the corpus based on subgenres within synthwave. These subgenres are similar to the subgenres within heavy metal, but likely a lot more subtle. It would therefore be intresting to see if these subgenres are actually detectable within the corpus. I personally do not think there are very significant diferences between most of these subgenres, but we will see if the data agrees with that statement. As a second point of exploration, I want to distinguish between artists. This will probably fit nicely with subgenre detection, because you could imaine each artist's style to be similar to how subgenre styles are defined.
+I intent to divide the corpus based on subgenres within synthwave. These subgenres are similar to the subgenres within heavy metal, but likely a lot more subtle. It would therefore be intresting to see if these subgenres are actually detectable within the corpus. I personally do not think there are very significant diferences between most of these subgenres, but we will see if the data agrees with that statement. As a second point of exploration, I want to distinguish between artists. This will probably fit nicely with subgenre detection, because you could imagine each artist's style to be similar to how subgenre styles are defined.
 
 **How representative are the tracks in your corpus for the groups you want to compare?**
 
@@ -61,7 +47,8 @@ I will use a variety of artists and playlists to build the corpus. For subgenre 
 
 
 ```{r, echo = FALSE}
-head(corpus)
+#kable(corpus)
+#datatable(corpus)
 ```
 
 ### Corpus popularity
@@ -86,7 +73,7 @@ As expected, all songs are very low speechiness (Not many songs contain voice).
 ### Valence
 
 ```{r, echo = FALSE}
-ggplot(corpus, aes(valence, energy, color=factor(mode))) + geom_point() + scale_fill_discrete(labels = c("Minor", "Major"))
+ggplot(corpus, aes(valence, energy, color=factor(mode), size=loudness)) + geom_point() + scale_fill_discrete(labels = c("Minor", "Major"))
 ```
 
 ***
