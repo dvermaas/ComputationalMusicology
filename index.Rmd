@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, include=FALSE}
 # Modules to import
 library(ggpubr)
-
+library(cowplot)
 library(ggplot2)
 library(dplyr)
 library(tidyverse)
@@ -54,7 +54,160 @@ theme_vapor <- function() {
 }
 ```
 
-### Introduction: Corpus Description
+### Chordogram {data-commentary-width=400}
+
+``` {r, echo = FALSE}
+circshift <- function(v, n) {
+  if (n == 0) v else c(tail(v, n), head(v, -n))
+}
+#      C     C#    D     Eb    E     F     F#    G     Ab    A     Bb    B
+major_chord <-
+  c(   1,    0,    0,    0,    1,    0,    0,    1,    0,    0,    0,    0)
+minor_chord <-
+  c(   1,    0,    0,    1,    0,    0,    0,    1,    0,    0,    0,    0)
+seventh_chord <-
+  c(   1,    0,    0,    0,    1,    0,    0,    1,    0,    0,    1,    0)
+major_key <-
+  c(6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
+minor_key <-
+  c(6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
+chord_templates <-
+  tribble(
+    ~name, ~template,
+    "Gb:7", circshift(seventh_chord, 6),
+    "Gb:maj", circshift(major_chord, 6),
+    "Bb:min", circshift(minor_chord, 10),
+    "Db:maj", circshift(major_chord, 1),
+    "F:min", circshift(minor_chord, 5),
+    "Ab:7", circshift(seventh_chord, 8),
+    "Ab:maj", circshift(major_chord, 8),
+    "C:min", circshift(minor_chord, 0),
+    "Eb:7", circshift(seventh_chord, 3),
+    "Eb:maj", circshift(major_chord, 3),
+    "G:min", circshift(minor_chord, 7),
+    "Bb:7", circshift(seventh_chord, 10),
+    "Bb:maj", circshift(major_chord, 10),
+    "D:min", circshift(minor_chord, 2),
+    "F:7", circshift(seventh_chord, 5),
+    "F:maj", circshift(major_chord, 5),
+    "A:min", circshift(minor_chord, 9),
+    "C:7", circshift(seventh_chord, 0),
+    "C:maj", circshift(major_chord, 0),
+    "E:min", circshift(minor_chord, 4),
+    "G:7", circshift(seventh_chord, 7),
+    "G:maj", circshift(major_chord, 7),
+    "B:min", circshift(minor_chord, 11),
+    "D:7", circshift(seventh_chord, 2),
+    "D:maj", circshift(major_chord, 2),
+    "F#:min", circshift(minor_chord, 6),
+    "A:7", circshift(seventh_chord, 9),
+    "A:maj", circshift(major_chord, 9),
+    "C#:min", circshift(minor_chord, 1),
+    "E:7", circshift(seventh_chord, 4),
+    "E:maj", circshift(major_chord, 4),
+    "G#:min", circshift(minor_chord, 8),
+    "B:7", circshift(seventh_chord, 11),
+    "B:maj", circshift(major_chord, 11),
+    "D#:min", circshift(minor_chord, 3)
+  )
+key_templates <-
+  tribble(
+    ~name, ~template,
+    "Gb:maj", circshift(major_key, 6),
+    "Bb:min", circshift(minor_key, 10),
+    "Db:maj", circshift(major_key, 1),
+    "F:min", circshift(minor_key, 5),
+    "Ab:maj", circshift(major_key, 8),
+    "C:min", circshift(minor_key, 0),
+    "Eb:maj", circshift(major_key, 3),
+    "G:min", circshift(minor_key, 7),
+    "Bb:maj", circshift(major_key, 10),
+    "D:min", circshift(minor_key, 2),
+    "F:maj", circshift(major_key, 5),
+    "A:min", circshift(minor_key, 9),
+    "C:maj", circshift(major_key, 0),
+    "E:min", circshift(minor_key, 4),
+    "G:maj", circshift(major_key, 7),
+    "B:min", circshift(minor_key, 11),
+    "D:maj", circshift(major_key, 2),
+    "F#:min", circshift(minor_key, 6),
+    "A:maj", circshift(major_key, 9),
+    "C#:min", circshift(minor_key, 1),
+    "E:maj", circshift(major_key, 4),
+    "G#:min", circshift(minor_key, 8),
+    "B:maj", circshift(major_key, 11),
+    "D#:min", circshift(minor_key, 3)
+  )
+daysofthunder <-
+  get_tidy_audio_analysis("6tJPdGKrbAeyhkkhn44RHR") %>%
+  compmus_align(sections, segments) %>%
+  select(sections) %>%
+  unnest(sections) %>%
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "mean", norm = "manhattan"
+      )
+  )
+daysofthunder_plot <- daysofthunder %>% 
+  compmus_match_pitch_template(
+    key_templates,         # Change to chord_templates if descired
+    method = "euclidean",  # Try different distance metrics
+    norm = "manhattan"     # Try different norms
+  ) %>%
+  ggplot(
+    aes(x = start + duration / 2, width = duration, y = name, fill = d)
+  ) +
+  geom_tile() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "", , title="Days of thunder - The Midnight")  + theme_vapor()
+
+wildones <-
+  get_tidy_audio_analysis("03FPFGGmCFCFX9X7vNB3JW") %>%
+  compmus_align(sections, segments) %>%
+  select(sections) %>%
+  unnest(sections) %>%
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "mean", norm = "manhattan"
+      )
+  )
+wildones_plot <- wildones %>% 
+  compmus_match_pitch_template(
+    key_templates,         # Change to chord_templates if descired
+    method = "euclidean",  # Try different distance metrics
+    norm = "manhattan"     # Try different norms
+  ) %>%
+  ggplot(
+    aes(x = start + duration / 2, width = duration, y = name, fill = d)
+  ) +
+  geom_tile() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "", title="Wild Ones - FM-84") + theme_vapor()
+plot_grid(daysofthunder_plot, wildones_plot, hjust="outward", heights=c(2,4),ncol=1, nrow=2) #5,7
+```
+
+***
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/6tJPdGKrbAeyhkkhn44RHR?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/03FPFGGmCFCFX9X7vNB3JW?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+**Chord comparison**
+
+I have chosen Days of Thunder & Wild Ones from to corpus to do chordogram analysis with. Both songs contain vocals and have more 'normal' structure compared to most other synthwave tracks in the corpus.
+Days of thunder seems to have less chord variation, while also being longer. Wild Ones has a lot of chord changes in the beginning, but the final stretch also seems to have no significant chord changes. It is surprising that both songs come out so different, because while the tracks do not sound the same, I do think that both artists make similar kinds of synthwave music.
+
+### Introduction: Corpus Description {data-commentary-width=400}
 
 **What is your corpus, why did you choose it, and what do you think is interesting about it?**
 
@@ -84,7 +237,7 @@ I will use a variety of artists and playlists to build the corpus. For subgenre 
 #datatable(corpus)
 ```
 
-### Corpus distribution
+### Corpus distribution {data-commentary-width=400}
 
 ```{r, echo = FALSE}
 p1 <- ggplot(corpus, aes(track.popularity)) + geom_histogram(bins=50, fill = "#ff6c11") +
@@ -134,7 +287,7 @@ It is clear from this histogram that speechness is very low in the corpus. This 
 corpus do not contain any vocals. What the plot does show us is that the expected speechness values and the Spotify provided values
 do indeed match up, which is good.
 
-### Energy & Valence
+### Energy & Valence {data-commentary-width=400}
 
 ```{r, echo = FALSE}
 p <- ggplot(corpus, aes(valence, energy, color=mode, label = track.name)) + geom_point(alpha=.8, size=3) + scale_fill_discrete() +
@@ -175,7 +328,7 @@ corpus %>%
 
 Energy and Valence can convey the mood of songs. Here red are minor songs.
 
-### Dynamic Time Warping
+### Dynamic Time Warping {data-commentary-width=400}
 
 ```{r, echo = FALSE}
 ## Crockett's Theme - Jan Hammer
@@ -210,7 +363,7 @@ p <- compmus_long_distance(
   ) +
   geom_tile() +
   coord_equal() +
-  labs(x = "Crockett's Theme - Jan Hammer", y = "Crockett's Theme (remaster) - Jan Hammer") +
+  labs(x = "Crockett's Theme - Jan Hammer", y = "Crockett's Theme (remaster) - Jan Hammer", title = "How do you remove those white bars?") +
   theme_vapor() +
   scale_fill_viridis_c(guide = NULL)
 
@@ -238,7 +391,7 @@ Therefore it is probably the perfect candidate for this comparison.
 
 The plot shows that the original and the remastered soundtrack are indeed very similar.
 
-### Chroma and Timbre
+### Self Similarity Matrix: Chroma and Timbre {data-commentary-width=400}
 
 ```{r, echo = FALSE}
 turbokiller <-
@@ -284,17 +437,16 @@ p <- bind_rows(
   facet_wrap(~type) +
   scale_fill_viridis_c(option = "C") +
   theme_vapor() + theme(strip.text = element_text(colour = "#eb34b1"), panel.background  = element_rect(fill = "#121212", colour="#121212")) + 
-  labs(x = "", y = "")
+  labs(x = "", y = "", title = "Turbo Killer - Carpenter Brut")
 
 p
+#plot_grid(p, p, hjust="outward", heights=c(2,4),ncol=1, nrow=2) #5,7
 ```
 
 ***
 
 ```{=html}
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/10qbHF920zH5K8C8IcE5AL?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-<br>
-<br>
 ```
 
 **Song Choice**
