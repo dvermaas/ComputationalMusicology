@@ -54,6 +54,338 @@ theme_vapor <- function() {
 }
 ```
 
+### Tempogram {data-commentary-width=500}
+
+```{r echo=FALSE}
+nexus <- get_tidy_audio_analysis("6641RMUKoXHPVABNIJLZwm")
+nexus_plot <- nexus %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_vapor()
+ggnexus <- ggplotly(nexus_plot)
+
+hang <- get_tidy_audio_analysis("5PlZbtB1Ok46sKyjKEfppR")
+hang_plot <- hang %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Looking") +
+  theme_vapor()
+gghang <- ggplotly(hang_plot)
+```
+
+```{r echo=FALSE}
+subplot(ggnexus, gghang, nrows = 2, margin = 0.05, shareX = TRUE, titleY = TRUE) %>% layout(title = '') %>% 
+  layout(annotations = 
+           list(list(x = 0.5 , y = 1.07, text = "Nexus - Downtown Binary",
+                     showarrow = F, xref='paper', yref='paper'),
+                list(x = .5 , y = .49, text = "Hang'em All - Carpenter Brut",
+                     showarrow = F, xref='paper', yref='paper'))
+)
+```
+
+***
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/6641RMUKoXHPVABNIJLZwm?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5PlZbtB1Ok46sKyjKEfppR?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+**Tempo Analysis: Nexus**
+
+Nexus from Downtown Binary gives some interesting results in tempo analysis, it has three very distinctive phases.The intro phase takes the first 90 seconds of the song, and has very fluctuating tempo. We get a very noisy tempogram here. After this the second phase lasts until 115 seconds and has more clearly defined BPM, as it slowly bridges the intro and third phase. The third phase has a very clear 105 BPM line and a less clear 158 BPM line.
+
+**Tempo Analysis: Hang'em all**
+
+Hang’em all is an interesting song to compare with Nexus, Because Nexus is more chill, while Carpenter Brut’s Hang’em all is more powerful/aggressive. Hang’em contains both high and low intensity sections. The first 50 seconds of the track start intense, followed by a low intensity subsection. You can clearly observe this in the Tempo plot, which becomes less noisy and a more consistent line after these first 50 seconds. From 85 to 120 seconds there is a more intense subsection, followed by low intensity that blends into high, which is unexpected, because the whole section looks like the first 50 seconds of the low intensity track section.
+
+**Comparing**
+
+Hang’em all consistently has higher BPM compared to Nexus, which was to be expected. While Hang’em all does contain relaxed parts, it always feels more faster paced than Nexus. The lowest intensity/buildup phases of both seem to have BPM’s that are not clearly defined by the plot, but when the main parts of both songs happen the BPM line becomes very sharp and accurate. Average BPM seems to be a reasonable and usable statistic to differentiate between Carpenter Brut and Downtown Binary.
+
+### Introduction: Corpus Description {data-commentary-width=400}
+
+**What is your corpus, why did you choose it, and what do you think is interesting about it?**
+
+Synthwave (also called outrun, retrowave, or futuresynth) is an electronic music microgenre that is based predominantly on the music associated with action, science-fiction, and horror film soundtracks of the 1980s. Other influences are drawn from the decade's art and video games. Synthwave musicians often espouse nostalgia for 1980s culture and attempt to capture the era's atmosphere and celebrate it. (from wikipedia)
+
+I chose this corpus because I am currently listening to a lot of synthwave music. I also listen to all my music on Spotify, so I can use my playlists to build my corpus up quickly. I am also currently working on a synthwave rhythm-game in unity, so exploring this corpus could also help with this side project.
+
+I have selected the following artists, which should represent the following subgenres:
+
+* Downtown binary: chill-synth
+* Jan Hammer: soundtrack synth
+* The midnight: pop/dance synth
+* Home: Vaporwave
+* Carpenter Brut: Hardcore-ish synth
+
+**What are the natural groups or comparison points in your corpus and what is expected between them?**
+
+I intend to divide the corpus based on subgenres within synthwave. These subgenres are similar to the subgenres within heavy metal, but likely a lot more subtle. It would therefore be interesting to see if these subgenres are actually detectable within the corpus. I personally do not think there are very significant differences between most of these subgenres, but we will see if the data agrees with that statement. I want to approach this by selecting five of the most different synthwave-artists I enjoy listening to, and by looking if these differences are perceivable by the music-visualization methods mentioned during the course.
+
+**How representative are the tracks in your corpus for the groups you want to compare?**
+
+I will use a couple of playlists for each artist to build the corpus, making sure all artists take up an (close to) equal share of the corpus. This will ensure that all artists are equally represented. For subgenre detection representativeness is debatable. It is almost universally agreed upon that Home is one of the OG’s of Vaporwave. Jan Hammer is also a very respected soundtrack artist in the scene. The other genres are probably more debatable. But the same goes for the more niche subgenres of hardcore rock, so I believe the experiment will still be compelling.
+
+**Identify several tracks in your corpus that are either extremely typical or atypical. Why do you think that they are so typical or so strange?**
+
+Turbo Killer by Carpenter Brut is one atypical outlier. It is by far the most intense/speedy track in the entire corpus, even by Carpenter Brut standards. I also think that Resonance from Home may be an outlier. It has very odd sounds, even for vaporwave standards, I do not think there is anything that sounds close to this track. Respirate (Downtown Binary Remix) is the final outlier in this corpus. This is obviously because it is a remix of a song not originally created by Downtown Binary, but I think it still retains the Downtown Binary style, therefore I expect it to be interesting in analysis.
+
+**Source & Reproducibility**
+
+The whole project uses Spotify API as the source, and by hitting the Github "Source code" button, all code used to generate all visualizations can be verified on accuracy and methodology.
+
+***
+
+**Playlist**
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/58spcwLelMvMpKvObWuwbN?utm_source=generator" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+
+```{r, echo = FALSE}
+#kable(corpus)
+#datatable(corpus)
+```
+
+### Corpus distribution {data-commentary-width=400}
+
+```{r, echo = FALSE}
+p1 <- ggplot(corpus, aes(track.popularity)) + geom_histogram(bins=50, fill = "#ff6c11") +
+  labs(
+  x="Popularity",
+  y="Count",
+  title="Popularity distribution of the corpus",
+  caption="Source: Spotify API") +
+  xlim(0,100) +
+  theme_vapor()
+
+p2 <- ggplot(corpus, aes(speechiness)) + geom_histogram(bins=50, fill = "#f9c80e") +
+  labs(
+  x="Speechness",
+  y="Count",
+  title="Speechness distribution of the corpus",
+  caption="Source: Spotify API") +
+  xlim(0,1) +
+  theme_vapor()
+
+#grid.arrange(p1, p2, ncol=2)
+
+# subplot titles: https://stackoverflow.com/questions/37285729/how-to-give-subtitles-for-subplot-in-plot-ly-using-r
+subplot(ggplotly(p1), ggplotly(p2)) %>% layout(title = '') %>% 
+  layout(annotations = 
+           list(list(x = 0.15 , y = 1.05, text = "Popularity distribution of the corpus",
+                     showarrow = F, xref='paper', yref='paper'),
+                list(x = 0.85 , y = 1.05, text = "Speechness distribution of the corpus", 
+                     showarrow = F, xref='paper', yref='paper'))
+)
+```
+
+***
+
+**The basics**
+
+When working with a new dataset, it is often a great idea to create some basic plots to get a feeling for the dataset,
+before diving into the actual research. The following two histograms will hopefully give a crude visualization of some
+properties of the chosen corpus.
+
+**Low popularity**
+
+Lets start of by looking at the popularity of the songs in the matrix. Spotify API assigns a popularity value to each
+track from 0 to 100. We can see that most songs have about 50 popularity. With some outliers close to minimum and maximum
+popularity. The corpus has a surprising amount of popularity while not being a well known genre (or maybe it is?). It would
+be nice if Spotify would explain how it determines popularity.
+
+**Low Speechness**
+
+It is clear from this histogram that speechness is very low in the corpus. This makes a lot of sense, because most tracks in the
+corpus do not contain any vocals. What the plot does show us is that the expected speechness values and the Spotify provided values
+do indeed match up, which is good.
+
+### Energy & Valence {data-commentary-width=400}
+
+```{r, echo = FALSE}
+p <- ggplot(corpus, aes(valence, energy, color=mode, label = track.name)) + geom_point(alpha=.8, size=3) + scale_fill_discrete() +
+  labs(
+  x="Valence",
+  y="Energy",
+  title="Valence & Energy",
+  caption="Source: Spotify API") +
+  xlim(0,1) + 
+  ylim(0,1) +
+  theme_vapor()
+
+myplot = ggplotly(p)
+
+# fixing weird legend formatting: https://stackoverflow.com/questions/49133395/strange-formatting-of-legend-in-ggplotly-in-r
+for (i in 1:length(myplot$x$data)){
+    if (!is.null(myplot$x$data[[i]]$name)){
+        myplot$x$data[[i]]$name =  gsub("\\(","",str_split(myplot$x$data[[i]]$name,",")[[1]][1])
+    }
+}
+
+myplot
+```
+
+```{r, include = FALSE} 
+# font = "TTNorms"
+corpus %>% 
+  plot_ly(x = ~valence, y = ~energy, color = ~mode, size = 14, hoverinfo = "text",
+  text = ~paste(" Song:", track.name, "<br>", "Artist(s):", artists.name, "<br>",
+  "Valence:", valence, "<br>", "Energy:", energy)) %>%
+  layout(font = list(color = "#eb34b1", size = 16, family = "TTNorms"))%>%
+  layout(plot_bgcolor="#121212", paper_bgcolor="#181818") %>%
+  layout(title="Valence & energy", xlabel = "hey") %>%
+  layout(xaxis = list(title = "Valence", zerolinecolor = "#eb34b1", gridcolor = "#eb34b1"), yaxis = list(title = "Energy", zerolinecolor = "#eb34b1", gridcolor = "#eb34b1"))
+```
+
+***
+
+**Vibe checking**
+
+Energy and Valence can convey the mood of songs. We can see clearly that almost all songs have 0.5 or more energy, with Crockett's Theme being the lowest at 0.38 energy. It also seems that Major key songs have lower valence then Minor key songs, but this trend is not that pronounced.
+
+### Dynamic Time Warping {data-commentary-width=400}
+
+```{r, echo = FALSE}
+## Crockett's Theme - Jan Hammer
+crock_original <-
+  get_tidy_audio_analysis("3TnJ7M6in8Pb5EyGBUK02Y") %>%
+  select(segments) %>%
+  unnest(segments) %>%
+  select(start, duration, pitches)
+
+## Crockett's Theme - Jan Hammer
+crock_remaster <-
+  get_tidy_audio_analysis("5srgpROEtK8KLKQl5FW7Ub") %>%
+  select(segments) %>%
+  unnest(segments) %>%
+  select(start, duration, pitches)
+
+
+dynamic_timewarp <- compmus_long_distance(
+  crock_original %>% mutate(pitches = map(pitches, compmus_normalise, "chebyshev")),
+  crock_remaster %>% mutate(pitches = map(pitches, compmus_normalise, "chebyshev")),
+  feature = pitches,
+  method = "euclidean"
+) %>%
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_equal() +
+  labs(x = "Crockett's Theme - Jan Hammer", y = "Crockett's Theme (remaster) - Jan Hammer", title = "How do you remove those white bars?") +
+  theme_vapor() +
+  scale_fill_viridis_c(guide = NULL)
+
+dynamic_timewarp
+```
+
+***
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3TnJ7M6in8Pb5EyGBUK02Y?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5srgpROEtK8KLKQl5FW7Ub?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+**Comparing original to remaster**
+
+Jan Hammer's most iconic soundtrack has to be 'Crockett's Theme' from Miami Vice. Miami Vice is quite old now (originally aired in 1984),
+but Jan Hammer's work on the soundtrack is great, and went on to inspire a lot of the modern Synthwave artists. Jan Hammer recently (2018) released a remaster
+of 'Crockett's Theme' in the 'Special edition' album. I like this remaster better, but it is very subtly different from the original. 
+Therefore it is probably the perfect candidate for this comparison.
+
+**Analysis**
+
+The plot shows that the original and the remastered soundtrack are indeed very similar.
+
+### Self Similarity Matrix: Chroma and Timbre {data-commentary-width=400}
+
+```{r, echo = FALSE}
+turbokiller <-
+  get_tidy_audio_analysis("10qbHF920zH5K8C8IcE5AL") %>%
+  compmus_align(bars, segments) %>%
+  select(bars) %>%
+  unnest(bars) %>%
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) %>%
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+
+
+turbokiller_plot <- bind_rows(
+  turbokiller %>% 
+    compmus_self_similarity(pitches, "aitchison") %>% 
+    mutate(d = d / max(d), type = "Chroma"),
+  turbokiller %>% 
+    compmus_self_similarity(timbre, "euclidean") %>% 
+    mutate(d = d / max(d), type = "Timbre")
+) %>% 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "C") +
+  theme_vapor() + theme(strip.text = element_text(colour = "#eb34b1"), panel.background  = element_rect(fill = "#121212", colour="#121212")) + 
+  labs(x = "", y = "", title = "Turbo Killer - Carpenter Brut")
+
+turbokiller_plot
+#plot_grid(p, p, hjust="outward", heights=c(2,4),ncol=1, nrow=2) #5,7
+```
+
+***
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/10qbHF920zH5K8C8IcE5AL?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+**Song Choice**
+
+I wanted to explore the song 'Turbo Killer' by 'Carpenter Brut'. This song really stands out for quick pacing and constantly building and escalating upon the previous 'verse'. The song gives a sense of progression or fast movement/speed, and that is probably why this is one of my favorite tracks in this corpus.
+
+**The Chroma matrix**
+
+When looking at the Chroma matrix we see a lot of tiny changes in the first forty seconds. Every seven-ish seconds there is a change. After 40 seconds the song changes into high tempo guitar only, and the following blocks all add additional elements to this. The matrix turns out very interesting, because you can see how the song constantly builds up to more complexity.
+
+**The Timbre matrix**
+
+The Timbre matrix looks less interesting. There are no real verses, but you can tell where transitions to more complexity happen. What is very surprising is that the high point of the timbre matrix is at the end of the song.
+
 ### Chordogram {data-commentary-width=400}
 
 ``` {r, echo = FALSE}
@@ -189,7 +521,16 @@ wildones_plot <- wildones %>%
   scale_fill_viridis_c(guide = "none") +
   theme_minimal() +
   labs(x = "Time (s)", y = "", title="Wild Ones - FM-84") + theme_vapor()
-plot_grid(daysofthunder_plot, wildones_plot, hjust="outward", heights=c(2,4),ncol=1, nrow=2) #5,7
+
+#plot_grid(daysofthunder_plot, wildones_plot, hjust="outward", heights=c(2,4),ncol=1, nrow=2)
+
+subplot(ggplotly(daysofthunder_plot), ggplotly(wildones_plot), nrows = 2, margin = 0.05, shareX = TRUE) %>% 
+  layout(title ='') %>% 
+  layout(annotations = 
+           list(list(x = 0.5 , y = 1.07, text = "Days of thunder - The Midnight",
+                     showarrow = F, xref='paper', yref='paper'),
+                list(x = .5 , y = .49, text = "Wild Ones - FM-84",
+                     showarrow = F, xref='paper', yref='paper')))
 ```
 
 ***
@@ -204,259 +545,6 @@ plot_grid(daysofthunder_plot, wildones_plot, hjust="outward", heights=c(2,4),nco
 
 **Chord comparison**
 
-I have chosen Days of Thunder & Wild Ones from to corpus to do chordogram analysis with. Both songs contain vocals and have more 'normal' structure compared to most other synthwave tracks in the corpus.
+I have chosen Days of Thunder & Wild Ones from to corpus to do chordogram analysis with. Both songs contain vocals and have more 'normal' structure compared to most other synthwave tracks in the corpus. 
 Days of thunder seems to have less chord variation, while also being longer. Wild Ones has a lot of chord changes in the beginning, but the final stretch also seems to have no significant chord changes. It is surprising that both songs come out so different, because while the tracks do not sound the same, I do think that both artists make similar kinds of synthwave music.
 
-### Introduction: Corpus Description {data-commentary-width=400}
-
-**What is your corpus, why did you choose it, and what do you think is interesting about it?**
-
-Synthwave (also called outrun, retrowave, or futuresynth) is an electronic music microgenre that is based predominantly on the music associated with action, science-fiction, and horror film soundtracks of the 1980s. Other influences are drawn from the decade's art and video games. Synthwave musicians often espouse nostalgia for 1980s culture and attempt to capture the era's atmosphere and celebrate it. (from wikipedia)
-
-I chose this corpus because I am currently listening to a lot of synthwave music. I also listen to all my music on spotify, so I can use my playlists to build my corpus up quickly. I am also currently working on a synthwave rythm-game in unity, so exploring this corpus could also help with this side project.
-
-**What is your corpus, why did you choose it, and what do you think is interesting about it?**
-
-I intent to divide the corpus based on subgenres within synthwave. These subgenres are similar to the subgenres within heavy metal, but likely a lot more subtle. It would therefore be intresting to see if these subgenres are actually detectable within the corpus. I personally do not think there are very significant diferences between most of these subgenres, but we will see if the data agrees with that statement. As a second point of exploration, I want to distinguish between artists. This will probably fit nicely with subgenre detection, because you could imagine each artist's style to be similar to how subgenre styles are defined.
-
-**How representative are the tracks in your corpus for the groups you want to compare?**
-
-I will use a variety of artists and playlists to build the corpus. For subgenre detection I will use playlists with songs for each subgenre. For artist dectection I will include a few albums of synthwave artists that are intresting and feel different, to make the comparison intresting.
-
-***
-
-**Playlist**
-
-```{=html}
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/58spcwLelMvMpKvObWuwbN?utm_source=generator" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-```
-
-
-```{r, echo = FALSE}
-#kable(corpus)
-#datatable(corpus)
-```
-
-### Corpus distribution {data-commentary-width=400}
-
-```{r, echo = FALSE}
-p1 <- ggplot(corpus, aes(track.popularity)) + geom_histogram(bins=50, fill = "#ff6c11") +
-  labs(
-  x="Popularity",
-  y="Count",
-  title="Popularity distribution of the corpus",
-  caption="Source: Spotify API") +
-  xlim(100,0) +
-  theme_vapor()
-
-p2 <- ggplot(corpus, aes(speechiness)) + geom_histogram(bins=50, fill = "#f9c80e") +
-  labs(
-  x="Speechness",
-  y="Count",
-  title="Speechness distribution of the corpus",
-  caption="Source: Spotify API") +
-  xlim(1,0) +
-  theme_vapor()
-
-#grid.arrange(p1, p2, ncol=2)
-subplot(ggplotly(p1), ggplotly(p2)) %>% layout(title = '') %>% 
-  # subplot titles: https://stackoverflow.com/questions/37285729/how-to-give-subtitles-for-subplot-in-plot-ly-using-r
-  layout(annotations = list(list(x = 0.15 , y = 1.05, text = "Popularity distribution of the corpus", showarrow = F, xref='paper', yref='paper'),
-  list(x = 0.85 , y = 1.05, text = "Speechness distribution of the corpus", showarrow = F, xref='paper', yref='paper'))
-)
-```
-
-***
-
-**The basics**
-
-When working with a new dataset, it is often a great idea to create some basic plots to get a feeling for the dataset,
-before diving into the actual research. The following two histograms will hopefully give a crude visualization of some
-properties of the chosen corpus.
-
-**Low popularity**
-
-Lets start of by looking at the popularity of the songs in the matrix. Spotify API assigns a popularity value to each
-track from 0 to 100. We can see that most songs have about 50 popularity. With some outliers close to minimum and maximum
-popularity. The corpus has a surprising amount of popularity while not being a well known genre (or maybe it is?). It would
-be nice if Spotify would explain how it determines popularity.
-
-**Low Speechness**
-
-It is clear from this histogram that speechness is very low in the corpus. This makes a lot of sense, because most tracks in the
-corpus do not contain any vocals. What the plot does show us is that the expected speechness values and the Spotify provided values
-do indeed match up, which is good.
-
-### Energy & Valence {data-commentary-width=400}
-
-```{r, echo = FALSE}
-p <- ggplot(corpus, aes(valence, energy, color=mode, label = track.name)) + geom_point(alpha=.8, size=3) + scale_fill_discrete() +
-  labs(
-  x="Valence",
-  y="Energy",
-  title="Valence & Energy",
-  caption="Source: Spotify API") +
-  theme_vapor()
-
-myplot = ggplotly(p)
-
-# fixing weird legend formatting: https://stackoverflow.com/questions/49133395/strange-formatting-of-legend-in-ggplotly-in-r
-for (i in 1:length(myplot$x$data)){
-    if (!is.null(myplot$x$data[[i]]$name)){
-        myplot$x$data[[i]]$name =  gsub("\\(","",str_split(myplot$x$data[[i]]$name,",")[[1]][1])
-    }
-}
-
-myplot
-```
-
-```{r, include = FALSE} 
-# font = "TTNorms"
-corpus %>% 
-  plot_ly(x = ~valence, y = ~energy, color = ~mode, size = 14, hoverinfo = "text",
-  text = ~paste(" Song:", track.name, "<br>", "Artist(s):", artists.name, "<br>",
-  "Valence:", valence, "<br>", "Energy:", energy)) %>%
-  layout(font = list(color = "#eb34b1", size = 16, family = "TTNorms"))%>%
-  layout(plot_bgcolor="#121212", paper_bgcolor="#181818") %>%
-  layout(title="Valence & energy", xlabel = "hey") %>%
-  layout(xaxis = list(title = "Valence", zerolinecolor = "#eb34b1", gridcolor = "#eb34b1"), yaxis = list(title = "Energy", zerolinecolor = "#eb34b1", gridcolor = "#eb34b1"))
-```
-
-***
-
-**Vibe checking**
-
-Energy and Valence can convey the mood of songs. Here red are minor songs.
-
-### Dynamic Time Warping {data-commentary-width=400}
-
-```{r, echo = FALSE}
-## Crockett's Theme - Jan Hammer
-crock_original <-
-  get_tidy_audio_analysis("3TnJ7M6in8Pb5EyGBUK02Y") %>%
-  select(segments) %>%
-  unnest(segments) %>%
-  select(start, duration, pitches)
-
-## Crockett's Theme - Jan Hammer
-crock_remaster <-
-  get_tidy_audio_analysis("5srgpROEtK8KLKQl5FW7Ub") %>%
-  select(segments) %>%
-  unnest(segments) %>%
-  select(start, duration, pitches)
-
-
-p <- compmus_long_distance(
-  crock_original %>% mutate(pitches = map(pitches, compmus_normalise, "chebyshev")),
-  crock_remaster %>% mutate(pitches = map(pitches, compmus_normalise, "chebyshev")),
-  feature = pitches,
-  method = "euclidean"
-) %>%
-  ggplot(
-    aes(
-      x = xstart + xduration / 2,
-      width = xduration,
-      y = ystart + yduration / 2,
-      height = yduration,
-      fill = d
-    )
-  ) +
-  geom_tile() +
-  coord_equal() +
-  labs(x = "Crockett's Theme - Jan Hammer", y = "Crockett's Theme (remaster) - Jan Hammer", title = "How do you remove those white bars?") +
-  theme_vapor() +
-  scale_fill_viridis_c(guide = NULL)
-
-p
-```
-
-***
-
-```{=html}
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3TnJ7M6in8Pb5EyGBUK02Y?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-```
-
-```{=html}
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5srgpROEtK8KLKQl5FW7Ub?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-```
-
-**Comparing original to remaster**
-
-Jan Hammer's most iconic soundtrack has to be 'Crockett's Theme' from Miami Vice. Miami Vice is quite old now (originally aired in 1984),
-but Jan Hammer's work on the soundtrack is great, and went on to inspire a lot of the modern Synthwave artists. Jan Hammer recently (2018) released a remaster
-of 'Crockett's Theme' in the 'Special edition' album. I like this remaster better, but it is very subtly different from the original. 
-Therefore it is probably the perfect candidate for this comparison.
-
-**Analysis**
-
-The plot shows that the original and the remastered soundtrack are indeed very similar.
-
-### Self Similarity Matrix: Chroma and Timbre {data-commentary-width=400}
-
-```{r, echo = FALSE}
-turbokiller <-
-  get_tidy_audio_analysis("10qbHF920zH5K8C8IcE5AL") %>%
-  compmus_align(bars, segments) %>%
-  select(bars) %>%
-  unnest(bars) %>%
-  mutate(
-    pitches =
-      map(segments,
-        compmus_summarise, pitches,
-        method = "acentre", norm = "manhattan"
-      )
-  ) %>%
-  mutate(
-    timbre =
-      map(segments,
-        compmus_summarise, timbre,
-        method = "mean"
-      )
-  )
-
-
-p <- bind_rows(
-  turbokiller %>% 
-    compmus_self_similarity(pitches, "aitchison") %>% 
-    mutate(d = d / max(d), type = "Chroma"),
-  turbokiller %>% 
-    compmus_self_similarity(timbre, "euclidean") %>% 
-    mutate(d = d / max(d), type = "Timbre")
-) %>% 
-  ggplot(
-    aes(
-      x = xstart + xduration / 2,
-      width = xduration,
-      y = ystart + yduration / 2,
-      height = yduration,
-      fill = d
-    )
-  ) +
-  geom_tile() +
-  coord_fixed() +
-  facet_wrap(~type) +
-  scale_fill_viridis_c(option = "C") +
-  theme_vapor() + theme(strip.text = element_text(colour = "#eb34b1"), panel.background  = element_rect(fill = "#121212", colour="#121212")) + 
-  labs(x = "", y = "", title = "Turbo Killer - Carpenter Brut")
-
-p
-#plot_grid(p, p, hjust="outward", heights=c(2,4),ncol=1, nrow=2) #5,7
-```
-
-***
-
-```{=html}
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/10qbHF920zH5K8C8IcE5AL?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-```
-
-**Song Choice**
-
-I wanted to explore the song 'Turbo Killer' by 'Carpenter Brut'. This song really stands out for quick pacing and constantly building and escalating upon the previous 'verse'. The song gives a sense of progression or fast movement/speed, and that is probably why this is one of my favorite tracks in this corpus.
-
-**The Chroma matrix**
-
-When looking at the Chroma matrix we see a lot of tiny changes in the first forty seconds. Every seven-ish seconds there is a change. After 40 seconds the song changes into high tempo guitar only, and the following blocks all add additional elements to this. The matrix turns out very interesting, because you can see how the song constantly builds up to more complexity.
-
-**The Timbre matrix**
-
-The Timbre matrix looks less interesting. There are no real verses, but you can tell where transitions to more complexity happen. What is very surprising is that the high point of the timbre matrix is at the end of the song.
