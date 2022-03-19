@@ -28,14 +28,20 @@ library(DT)
 library(showtext)
 library(compmus)
 library(gridExtra)
-font.add("TTNorms", "TTNorms-ExtraBold.otf")
-showtext.auto()
+
+# Custom font
+font_add("TTNorms", "TTNorms-ExtraBold.otf")
+showtext_auto()
 ```
 
 ```{r, include=FALSE}
-corpus <- get_playlist_audio_features("", "58spcwLelMvMpKvObWuwbN") %>%
+# Load corpus playlist from Spotify API
+corpus <- get_playlist_audio_features("", "75c0U5PruEBXAONbvVjHBH") %>%
   mutate(mode = ifelse(mode == 0, "Minor", "Major")) %>% 
   mutate(artists.name = map_chr(track.album.artists, function(x) x$name[1]))
+
+# Fixing error in artist.name mutation
+corpus$artists.name[corpus$artists.name == "Artemis Rising"] <- "Downtown Binary"
 ```
 
 ```{r, include=FALSE}
@@ -54,32 +60,31 @@ theme_vapor <- function() {
 }
 ```
 
-### Tempogram {data-commentary-width=500}
+### Tempogram {data-commentary-width=460}
 
 ```{r echo=FALSE}
 nexus <- get_tidy_audio_analysis("6641RMUKoXHPVABNIJLZwm")
-nexus_plot <- nexus %>%
+
+p1 <- nexus %>%
   tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
   ggplot(aes(x = time, y = bpm, fill = power)) +
   geom_raster() +
   scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Nexus - Downtown Binary") +
   theme_vapor()
-ggnexus <- ggplotly(nexus_plot)
+ggnexus <- 
 
-hang <- get_tidy_audio_analysis("5PlZbtB1Ok46sKyjKEfppR")
-hang_plot <- hang %>%
+hangem_all <- get_tidy_audio_analysis("5PlZbtB1Ok46sKyjKEfppR")
+
+p2 <- hangem_all %>%
   tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
   ggplot(aes(x = time, y = bpm, fill = power)) +
   geom_raster() +
   scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Looking") +
+  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Hang'em All - Carpenter Brut") +
   theme_vapor()
-gghang <- ggplotly(hang_plot)
-```
 
-```{r echo=FALSE}
-subplot(ggnexus, gghang, nrows = 2, margin = 0.05, shareX = TRUE, titleY = TRUE) %>% layout(title = '') %>% 
+subplot(ggplotly(p1), ggplotly(p2), nrows = 2, margin = 0.05, shareX = TRUE, titleY = TRUE) %>% layout(title = '') %>% 
   layout(annotations = 
            list(list(x = 0.5 , y = 1.07, text = "Nexus - Downtown Binary",
                      showarrow = F, xref='paper', yref='paper'),
@@ -98,11 +103,9 @@ subplot(ggnexus, gghang, nrows = 2, margin = 0.05, shareX = TRUE, titleY = TRUE)
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5PlZbtB1Ok46sKyjKEfppR?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
 ```
 
-**Tempo Analysis: Nexus**
+**Tempo Analysis**
 
 Nexus from Downtown Binary gives some interesting results in tempo analysis, it has three very distinctive phases.The intro phase takes the first 90 seconds of the song, and has very fluctuating tempo. We get a very noisy tempogram here. After this the second phase lasts until 115 seconds and has more clearly defined BPM, as it slowly bridges the intro and third phase. The third phase has a very clear 105 BPM line and a less clear 158 BPM line.
-
-**Tempo Analysis: Hang'em all**
 
 Hang’em all is an interesting song to compare with Nexus, Because Nexus is more chill, while Carpenter Brut’s Hang’em all is more powerful/aggressive. Hang’em contains both high and low intensity sections. The first 50 seconds of the track start intense, followed by a low intensity subsection. You can clearly observe this in the Tempo plot, which becomes less noisy and a more consistent line after these first 50 seconds. From 85 to 120 seconds there is a more intense subsection, followed by low intensity that blends into high, which is unexpected, because the whole section looks like the first 50 seconds of the low intensity track section.
 
@@ -114,7 +117,7 @@ Hang’em all consistently has higher BPM compared to Nexus, which was to be exp
 
 **What is your corpus, why did you choose it, and what do you think is interesting about it?**
 
-Synthwave (also called outrun, retrowave, or futuresynth) is an electronic music microgenre that is based predominantly on the music associated with action, science-fiction, and horror film soundtracks of the 1980s. Other influences are drawn from the decade's art and video games. Synthwave musicians often espouse nostalgia for 1980s culture and attempt to capture the era's atmosphere and celebrate it. (from wikipedia)
+Synthwave (also called outrun, retrowave, or futuresynth) is an electronic music microgenre that is based predominantly on the music associated with action, science-fiction, and horror film soundtracks of the 1980s. Other influences are drawn from the decade's art and video games. Synthwave musicians often espouse nostalgia for 1980s culture and attempt to capture the era's atmosphere and celebrate it. (from Wikipedia)
 
 I chose this corpus because I am currently listening to a lot of synthwave music. I also listen to all my music on Spotify, so I can use my playlists to build my corpus up quickly. I am also currently working on a synthwave rhythm-game in unity, so exploring this corpus could also help with this side project.
 
@@ -144,17 +147,17 @@ The whole project uses Spotify API as the source, and by hitting the Github "Sou
 
 ***
 
-**Playlist**
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/75c0U5PruEBXAONbvVjHBH?utm_source=generator" width="100%" height="280" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
 
 ```{=html}
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/58spcwLelMvMpKvObWuwbN?utm_source=generator" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/58spcwLelMvMpKvObWuwbN?utm_source=generator" width="100%" height="280" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
 ```
 
+**About the playlists**
 
-```{r, echo = FALSE}
-#kable(corpus)
-#datatable(corpus)
-```
+The corpus playlist contains all the tracks used in analysis. I chose to also include the old corpus, because it has a much greater listening experience. It contains a lot more variety taking the best songs from each album, while the new corpus includes more albums in their entirety.
 
 ### Corpus distribution {data-commentary-width=400}
 
@@ -176,8 +179,6 @@ p2 <- ggplot(corpus, aes(speechiness)) + geom_histogram(bins=50, fill = "#f9c80e
   caption="Source: Spotify API") +
   xlim(0,1) +
   theme_vapor()
-
-#grid.arrange(p1, p2, ncol=2)
 
 # subplot titles: https://stackoverflow.com/questions/37285729/how-to-give-subtitles-for-subplot-in-plot-ly-using-r
 subplot(ggplotly(p1), ggplotly(p2)) %>% layout(title = '') %>% 
@@ -213,12 +214,14 @@ do indeed match up, which is good.
 ### Energy & Valence {data-commentary-width=400}
 
 ```{r, echo = FALSE}
-p <- ggplot(corpus, aes(valence, energy, color=mode, label = track.name)) + geom_point(alpha=.8, size=3) + scale_fill_discrete() +
+# color = mode
+p <- ggplot(corpus, aes(valence, energy, label = track.name, color = artists.name)) + geom_point(alpha=.6, size=3) + scale_fill_discrete() +
   labs(
   x="Valence",
   y="Energy",
   title="Valence & Energy",
-  caption="Source: Spotify API") +
+  caption="Source: Spotify API",
+  color = "Artist(s)                       ") +
   xlim(0,1) + 
   ylim(0,1) +
   theme_vapor()
@@ -235,23 +238,11 @@ for (i in 1:length(myplot$x$data)){
 myplot
 ```
 
-```{r, include = FALSE} 
-# font = "TTNorms"
-corpus %>% 
-  plot_ly(x = ~valence, y = ~energy, color = ~mode, size = 14, hoverinfo = "text",
-  text = ~paste(" Song:", track.name, "<br>", "Artist(s):", artists.name, "<br>",
-  "Valence:", valence, "<br>", "Energy:", energy)) %>%
-  layout(font = list(color = "#eb34b1", size = 16, family = "TTNorms"))%>%
-  layout(plot_bgcolor="#121212", paper_bgcolor="#181818") %>%
-  layout(title="Valence & energy", xlabel = "hey") %>%
-  layout(xaxis = list(title = "Valence", zerolinecolor = "#eb34b1", gridcolor = "#eb34b1"), yaxis = list(title = "Energy", zerolinecolor = "#eb34b1", gridcolor = "#eb34b1"))
-```
-
 ***
 
 **Vibe checking**
 
-Energy and Valence can convey the mood of songs. We can see clearly that almost all songs have 0.5 or more energy, with Crockett's Theme being the lowest at 0.38 energy. It also seems that Major key songs have lower valence then Minor key songs, but this trend is not that pronounced.
+Energy and Valence can convey the mood of songs. We can see clearly that almost all songs have high energy, with Carpenter Brut having the highest average energy. Jan Hammer also seems to have the highest valence tracks. The song with the lowest energy is Night Talk, which has the low energy score of 0.258. It is good that most songs of each artist do hover around the same valence and energy, but there is a lot of overlap. This means that this data is propably not enough on its own to guess the artist for any given song.
 
 ### Dynamic Time Warping {data-commentary-width=400}
 
