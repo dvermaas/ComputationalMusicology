@@ -337,7 +337,6 @@ turbokiller <-
       )
   )
 
-
 turbokiller_plot <- bind_rows(
   turbokiller %>% 
     compmus_self_similarity(pitches, "aitchison") %>% 
@@ -362,14 +361,66 @@ turbokiller_plot <- bind_rows(
   theme_vapor() + theme(strip.text = element_text(colour = "#eb34b1"), panel.background  = element_rect(fill = "#121212", colour="#121212")) + 
   labs(x = "", y = "", title = "Turbo Killer - Carpenter Brut")
 
-turbokiller_plot
+
+resonance <-
+  get_tidy_audio_analysis("65r94rVdiMwqXyQFEr3tqT") %>%
+  compmus_align(bars, segments) %>%
+  select(bars) %>%
+  unnest(bars) %>%
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) %>%
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+
+resonance_plot <- bind_rows(
+  resonance %>% 
+    compmus_self_similarity(pitches, "aitchison") %>% 
+    mutate(d = d / max(d), type = "Chroma"),
+  resonance %>% 
+    compmus_self_similarity(timbre, "euclidean") %>% 
+    mutate(d = d / max(d), type = "Timbre")
+) %>% 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "C") +
+  theme_vapor() + theme(strip.text = element_text(colour = "#eb34b1"), panel.background  = element_rect(fill = "#121212", colour="#121212")) + 
+  labs(x = "", y = "", title = "Resonance - Home")
+
+#turbokiller_plot
 #plot_grid(p, p, hjust="outward", heights=c(2,4),ncol=1, nrow=2) #5,7
+gt <- grid.arrange(turbokiller_plot, resonance_plot, ncol=1)
+grid.draw(rectGrob(gp = gpar(fill = "#181818", col = "#181818")))
+grid.draw(gt)
 ```
 
 ***
 
 ```{=html}
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/10qbHF920zH5K8C8IcE5AL?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/65r94rVdiMwqXyQFEr3tqT?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
 ```
 
 **Song Choice**
