@@ -28,6 +28,7 @@ library(DT)
 library(showtext)
 library(compmus)
 library(gridExtra)
+library(grid)
 
 # Custom font
 font_add("TTNorms", "TTNorms-ExtraBold.otf")
@@ -51,10 +52,10 @@ theme_vapor <- function() {
     theme(
       text = element_text(family = "TTNorms", color = "#eb34b1", size=14),
       plot.title = element_text(hjust = 0.5),
-      plot.background = element_rect(fill = "#181818"),
+      plot.background = element_rect(fill = "#181818", colour="#181818"),
       panel.background  = element_rect(fill = "#121212"),
       legend.key = element_rect(fill = "#181818"),
-      #legend.background = element_rect(fill = "#131313"),
+      #legend.background = element_rect(fill = "#131313")
       panel.grid = element_line(color = "#eb34b1")
     )
 }
@@ -84,7 +85,8 @@ p2 <- hangem_all %>%
   labs(x = "Time (s)", y = "Tempo (BPM)", title = "Hang'em All - Carpenter Brut") +
   theme_vapor()
 
-subplot(ggplotly(p1), ggplotly(p2), nrows = 2, margin = 0.05, shareX = TRUE, titleY = TRUE) %>% layout(title = '') %>% 
+subplot(ggplotly(p1), ggplotly(p2), nrows = 2, margin = 0.05, shareX = TRUE, 
+        shareY = TRUE, titleY = TRUE) %>% layout(title = '') %>% 
   layout(annotations = 
            list(list(x = 0.5 , y = 1.07, text = "Nexus - Downtown Binary",
                      showarrow = F, xref='paper', yref='paper'),
@@ -279,11 +281,16 @@ dynamic_timewarp <- compmus_long_distance(
   ) +
   geom_tile() +
   coord_equal() +
-  labs(x = "Crockett's Theme - Jan Hammer", y = "Crockett's Theme (remaster) - Jan Hammer", title = "How do you remove those white bars?") +
-  theme_vapor() +
+  labs(x = "Crockett's Theme - Jan Hammer", y = "Crockett's Theme (remaster) - Jan Hammer", 
+       title = "Dynamic Timewarp") +
+  theme_vapor() + 
   scale_fill_viridis_c(guide = NULL)
 
-dynamic_timewarp
+# Fixing white backdrop: https://stackoverflow.com/questions/57051313/coord-map-of-ggplot2-ignores-plot-background-and-produces-white-margins-how
+gt <- ggplotGrob(dynamic_timewarp)
+grid.newpage()
+grid.draw(rectGrob(gp = gpar(fill = "#181818", col = "#181818")))
+grid.draw(gt)
 ```
 
 ***
@@ -515,7 +522,7 @@ wildones_plot <- wildones %>%
 
 #plot_grid(daysofthunder_plot, wildones_plot, hjust="outward", heights=c(2,4),ncol=1, nrow=2)
 
-subplot(ggplotly(daysofthunder_plot), ggplotly(wildones_plot), nrows = 2, margin = 0.05, shareX = TRUE) %>% 
+subplot(ggplotly(daysofthunder_plot), ggplotly(wildones_plot), nrows = 2, margin = 0.05, shareX = TRUE, shareY = TRUE) %>% 
   layout(title ='') %>% 
   layout(annotations = 
            list(list(x = 0.5 , y = 1.07, text = "Days of thunder - The Midnight",
