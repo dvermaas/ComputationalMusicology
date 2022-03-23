@@ -16,19 +16,20 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, include=FALSE}
 # Modules to import
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(plotly)
+library(spotifyr)
+library(compmus)
+library(grid)
+library(gridExtra)
 library(ggpubr)
 library(cowplot)
-library(ggplot2)
-library(dplyr)
-library(tidyverse)
-library(spotifyr)
-library(plotly)
-library(knitr)
-library(DT)
 library(showtext)
-library(compmus)
-library(gridExtra)
-library(grid)
+library(ggdendro)
+library(heatmaply)
+library(tidymodels)
 
 # Custom font
 font_add("TTNorms", "TTNorms-ExtraBold.otf")
@@ -59,61 +60,24 @@ theme_vapor <- function() {
       panel.grid = element_line(color = "#eb34b1")
     )
 }
+
+# KNN support functions
+get_conf_mat <- function(fit) {
+  outcome <- .get_tune_outcome_names(fit)
+  fit %>% 
+    collect_predictions() %>% 
+    conf_mat(truth = outcome, estimate = .pred_class)
+}  
+
+get_pr <- function(fit) {
+  fit %>% 
+    conf_mat_resampled() %>% 
+    group_by(Prediction) %>% mutate(precision = Freq / sum(Freq)) %>% 
+    group_by(Truth) %>% mutate(recall = Freq / sum(Freq)) %>% 
+    ungroup() %>% filter(Prediction == Truth) %>% 
+    select(class = Prediction, precision, recall)
+}  
 ```
-
-### Tempogram {data-commentary-width=460}
-
-```{r echo=FALSE}
-nexus <- get_tidy_audio_analysis("6641RMUKoXHPVABNIJLZwm")
-
-p1 <- nexus %>%
-  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
-  ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-  scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Nexus - Downtown Binary") +
-  theme_vapor()
-ggnexus <- 
-
-hangem_all <- get_tidy_audio_analysis("5PlZbtB1Ok46sKyjKEfppR")
-
-p2 <- hangem_all %>%
-  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
-  ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-  scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Hang'em All - Carpenter Brut") +
-  theme_vapor()
-
-subplot(ggplotly(p1), ggplotly(p2), nrows = 2, margin = 0.05, shareX = TRUE, 
-        shareY = TRUE, titleY = TRUE) %>% layout(title = '') %>% 
-  layout(annotations = 
-           list(list(x = 0.5 , y = 1.07, text = "Nexus - Downtown Binary",
-                     showarrow = F, xref='paper', yref='paper'),
-                list(x = .5 , y = .49, text = "Hang'em All - Carpenter Brut",
-                     showarrow = F, xref='paper', yref='paper'))
-)
-```
-
-***
-
-```{=html}
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/6641RMUKoXHPVABNIJLZwm?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-```
-
-```{=html}
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5PlZbtB1Ok46sKyjKEfppR?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-```
-
-**Tempo Analysis**
-
-Nexus from Downtown Binary gives some interesting results in tempo analysis, it has three very distinctive phases.The intro phase takes the first 90 seconds of the song, and has very fluctuating tempo. We get a very noisy tempogram here. After this the second phase lasts until 115 seconds and has more clearly defined BPM, as it slowly bridges the intro and third phase. The third phase has a very clear 105 BPM line and a less clear 158 BPM line.
-
-Hang’em all is an interesting song to compare with Nexus, Because Nexus is more chill, while Carpenter Brut’s Hang’em all is more powerful/aggressive. Hang’em contains both high and low intensity sections. The first 50 seconds of the track start intense, followed by a low intensity subsection. You can clearly observe this in the Tempo plot, which becomes less noisy and a more consistent line after these first 50 seconds. From 85 to 120 seconds there is a more intense subsection, followed by low intensity that blends into high, which is unexpected, because the whole section looks like the first 50 seconds of the low intensity track section.
-
-**Comparing**
-
-Hang’em all consistently has higher BPM compared to Nexus, which was to be expected. While Hang’em all does contain relaxed parts, it always feels more faster paced than Nexus. The lowest intensity/buildup phases of both seem to have BPM’s that are not clearly defined by the plot, but when the main parts of both songs happen the BPM line becomes very sharp and accurate. Average BPM seems to be a reasonable and usable statistic to differentiate between Carpenter Brut and Downtown Binary.
 
 ### Introduction: Corpus Description {data-commentary-width=400}
 
@@ -597,3 +561,141 @@ subplot(ggplotly(daysofthunder_plot), ggplotly(wildones_plot), nrows = 2, margin
 I have chosen Days of Thunder & Wild Ones from to corpus to do chordogram analysis with. Both songs contain vocals and have more 'normal' structure compared to most other synthwave tracks in the corpus. 
 Days of thunder seems to have less chord variation, while also being longer. Wild Ones has a lot of chord changes in the beginning, but the final stretch also seems to have no significant chord changes. It is surprising that both songs come out so different, because while the tracks do not sound the same, I do think that both artists make similar kinds of synthwave music.
 
+### Tempogram {data-commentary-width=460}
+
+```{r echo=FALSE}
+p1 <- get_tidy_audio_analysis("6641RMUKoXHPVABNIJLZwm") %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Nexus - Downtown Binary") +
+  theme_vapor()
+ggnexus <- 
+
+p2 <- get_tidy_audio_analysis("5PlZbtB1Ok46sKyjKEfppR") %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Hang'em All - Carpenter Brut") +
+  theme_vapor()
+
+subplot(ggplotly(p1), ggplotly(p2), nrows = 2, margin = 0.05, shareX = TRUE, 
+        shareY = TRUE, titleY = TRUE) %>% layout(title = '') %>% 
+  layout(annotations = 
+           list(list(x = 0.5 , y = 1.07, text = "Nexus - Downtown Binary",
+                     showarrow = F, xref='paper', yref='paper'),
+                list(x = .5 , y = .49, text = "Hang'em All - Carpenter Brut",
+                     showarrow = F, xref='paper', yref='paper'))
+)
+```
+
+***
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/6641RMUKoXHPVABNIJLZwm?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5PlZbtB1Ok46sKyjKEfppR?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
+
+**Tempo Analysis**
+
+Nexus from Downtown Binary gives some interesting results in tempo analysis, it has three very distinctive phases.The intro phase takes the first 90 seconds of the song, and has very fluctuating tempo. We get a very noisy tempogram here. After this the second phase lasts until 115 seconds and has more clearly defined BPM, as it slowly bridges the intro and third phase. The third phase has a very clear 105 BPM line and a less clear 158 BPM line.
+
+Hang’em all is an interesting song to compare with Nexus, Because Nexus is more chill, while Carpenter Brut’s Hang’em all is more powerful/aggressive. Hang’em contains both high and low intensity sections. The first 50 seconds of the track start intense, followed by a low intensity subsection. You can clearly observe this in the Tempo plot, which becomes less noisy and a more consistent line after these first 50 seconds. From 85 to 120 seconds there is a more intense subsection, followed by low intensity that blends into high, which is unexpected, because the whole section looks like the first 50 seconds of the low intensity track section.
+
+**Comparing**
+
+Hang’em all consistently has higher BPM compared to Nexus, which was to be expected. While Hang’em all does contain relaxed parts, it always feels more faster paced than Nexus. The lowest intensity/buildup phases of both seem to have BPM’s that are not clearly defined by the plot, but when the main parts of both songs happen the BPM line becomes very sharp and accurate. Average BPM seems to be a reasonable and usable statistic to differentiate between Carpenter Brut and Downtown Binary.
+
+### Machine Learning using KNN {data-commentary-width=400}
+
+```{r echo=FALSE}
+indie_features <-
+  corpus %>%  # For your portfolio, change this to the name of your corpus.
+  add_audio_analysis() %>% 
+  mutate(
+    playlist = factor(artists.name),
+    segments = map2(segments, key, compmus_c_transpose),
+    pitches =
+      map(
+        segments,
+        compmus_summarise, pitches,
+        method = "mean", norm = "manhattan"
+      ),
+    timbre =
+      map(
+        segments,
+        compmus_summarise, timbre,
+        method = "mean",
+      )
+  ) %>%
+  mutate(pitches = map(pitches, compmus_normalise, "clr")) %>%
+  mutate_at(vars(pitches, timbre), map, bind_rows) %>%
+  unnest(cols = c(pitches, timbre))
+```
+
+```{r echo=FALSE}
+indie_recipe <-
+  recipe(
+    playlist ~
+      danceability +
+      energy +
+      loudness +
+      speechiness +
+      acousticness +
+      instrumentalness +
+      liveness +
+      valence +
+      tempo +
+      duration +
+      C + `C#|Db` + D + `D#|Eb` +
+      E + `F` + `F#|Gb` + G +
+      `G#|Ab` + A + `A#|Bb` + B +
+      c01 + c02 + c03 + c04 + c05 + c06 +
+      c07 + c08 + c09 + c10 + c11 + c12,
+    data = indie_features,          # Use the same name as the previous block.
+  ) %>%
+  step_center(all_predictors()) %>%
+  step_scale(all_predictors())      # Converts to z-scores.
+  # step_range(all_predictors())    # Sets range to [0, 1].
+
+indie_cv <- indie_features %>% vfold_cv(5)
+```
+
+```{r echo=FALSE}
+knn_model <-
+  nearest_neighbor(neighbors = 1) %>%
+  set_mode("classification") %>% 
+  set_engine("kknn")
+indie_knn <- 
+  workflow() %>% 
+  add_recipe(indie_recipe) %>% 
+  add_model(knn_model) %>% 
+  fit_resamples(
+    indie_cv, 
+    control = control_resamples(save_pred = TRUE)
+  )
+```
+
+```{r, include=FALSE}
+indie_knn %>% get_conf_mat()
+```
+
+```{r echo=FALSE}
+p <- indie_knn %>% get_conf_mat() %>% autoplot(type = "heatmap") + theme_vapor() + scale_fill_gradient(low = "#261447", high = "#2DE2E6")
+ggplotly(p)
+```
+
+***
+
+**K-Nearest Neighbors**
+
+After all previous analysis, it is finally time to see if the research-question indeed holds true. This will be tested Using K-nearest neighbors. This algorithm makes use of all the spotify API data we have gotten accustomed to in previous analysis, and uses it to predict the artist. To validate these results, we do 5-K fold validation. This means that we train the model on 80% of the data and validate on the remaining 20%. This is then repeated until all 20% slices of the corpus have been in the validation partition once, giving a more honest non-cherrypicked representation of the results.
+
+**Results**
+
+It is obvious that the KNN classifier is very accurate when predicting artist. It achieves high accuracy on Carpenter Brut, and also performs decent on Jan Hammer and The Midnight. Downtown Binary and Home seem to be more difficult.
