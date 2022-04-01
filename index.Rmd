@@ -203,7 +203,8 @@ p2 <- ggplot(corpus, aes(speechiness)) + geom_histogram(bins=50, fill = "#f9c80e
   theme_vapor()
 
 # subplot titles: https://stackoverflow.com/questions/37285729/how-to-give-subtitles-for-subplot-in-plot-ly-using-r
-subplot(ggplotly(p1), ggplotly(p2)) %>% layout(title = '', showlegend = FALSE) %>% 
+subplot(ggplotly(p1), ggplotly(p2)) %>% 
+  layout(title = '', showlegend = FALSE) %>% 
   layout(annotations = 
            list(list(x = 0.15 , y = 1.05, text = "Popularity distribution of the corpus",
                      showarrow = F, xref='paper', yref='paper'),
@@ -241,7 +242,8 @@ which is good.
 
 ### Energy & Valence {data-commentary-width="400"}
 
-```{r, echo = FALSE}
+```{r, echo = FALSE} 
+#instumental acoustic
 p <- ggplot(corpus, aes(valence, energy, size = loudness, label = track.name, color = artists.name)) +
   geom_point(alpha=.6) +
   scale_fill_discrete() +
@@ -834,14 +836,15 @@ indie_cv <- indie_features %>% vfold_cv(5)
 ```
 
 ```{r echo=FALSE}
-knn_model <-
-  nearest_neighbor(neighbors = 1) %>%
+forest_model <-
+  rand_forest() %>%
   set_mode("classification") %>% 
-  set_engine("kknn")
-indie_knn <- 
+  set_engine("ranger", importance = "impurity")
+
+synth_forest <- 
   workflow() %>% 
   add_recipe(indie_recipe) %>% 
-  add_model(knn_model) %>% 
+  add_model(forest_model) %>% 
   fit_resamples(
     indie_cv, 
     control = control_resamples(save_pred = TRUE)
@@ -849,29 +852,102 @@ indie_knn <-
 ```
 
 ```{r echo=FALSE}
-p <- indie_knn %>% get_conf_mat() %>% autoplot(type = "heatmap") + theme_vapor() + scale_fill_gradient(low = "#261447", high = "#2DE2E6")
-ggplotly(p)
+p1 <- workflow() %>% 
+  add_recipe(indie_recipe) %>% 
+  add_model(forest_model) %>% 
+  fit(indie_features) %>% 
+  pluck("fit", "fit", "fit") %>%
+  ranger::importance() %>% 
+  enframe() %>% 
+  mutate(name = fct_reorder(name, value)) %>% 
+  ggplot(aes(name, value)) + 
+  geom_col(fill = "#2DE2E6") + 
+  coord_flip() +
+  labs(x = NULL, y = "Importance") + 
+  theme_vapor()
+
+p2 <- synth_forest %>% get_conf_mat() %>% 
+  autoplot(type = "heatmap") + 
+  aes(title = "Random Forest Truthtable") +
+  theme_vapor() + 
+  scale_fill_gradient(low = "#261447", high = "#2DE2E6")
+
+subplot(ggplotly(p1, legend = FALSE), ggplotly(p2), nrows = 1, margin = 0.06, titleX = TRUE, titleY = TRUE) %>% 
+  layout(title = '', showlegend = FALSE) %>%
+  layout(annotations = 
+           list(list(x = 0.15 , y = 1.05, text = "Most Important Features",
+                     showarrow = F, xref='paper', yref='paper'),
+                list(x = 0.85 , y = 1.05, text = "Random Forest Truth Table", 
+                     showarrow = F, xref='paper', yref='paper'))
+  )
 ```
+
 
 ***
 
-**K-Nearest Neighbors**
+**Random Forest**
 
 After all previous analysis, it is finally time to see if the
-research-question indeed holds true. This will be tested Using K-nearest
-neighbors. This algorithm makes use of all the Spotify API data we have
-gotten accustomed to in previous analysis, and uses it to predict the
-artist. To validate these results, we do 5-K fold validation. This means
+research-question indeed holds true. Initially KNN was used, but after
+testing Random Forest reported much better results in validation. Validation
+is done using K-fold validation, using 5 partitions. This means
 that we train the model on 80% of the data and validate on the remaining
 20%. This is then repeated until all 20% slices of the corpus have been
 in the validation partition once, giving a more honest non-cherry-picked
 representation of the results.
 
+**Important Features**
+
+Loudness is the most important feature for the Random Forest Classifier when
+classifying the corpus. This is not fully blindsiding, because in the Linear Loudness
+plot we already saw great separation between the labels. Timbre feature #1, which also
+represents loudness, is second. It is eye-opening that energy and valence are reasonably
+low, I did expect these features to be greater descriptors of the labels.
+
 **Results**
 
 When interpreting the results, one should keep in mind that the maximum
 score is 20, since the corpus has 20 entries of each artist. It is obvious 
-that the KNN classifier is very accurate when predicting artist. It achieves
+that the Random Forest Classifier is very accurate when predicting artist. It achieves
 the best results with Carpenter Brut, which is likely due to the fact that it
 contrasts the most compared to the other artists. It also performs decent on 
 Jan Hammer and The Midnight. Downtown Binary and Home seem to be more difficult.
+
+```{r include=FALSE}
+# Convert to tidy format for plotting
+pr <- synth_forest %>% get_pr() %>% 
+  rename(Precision = precision, Recall = recall)%>% 
+  pivot_longer(c("Precision", "Recall"), names_to = "type", values_to = "percentage")
+
+p <- ggplot(pr, aes(class, percentage, fill = type)) + 
+  geom_bar(stat="identity", position = "dodge") + 
+  labs(
+  x="Artist",
+  y="Percentage",
+  title="Statistics per label",
+  caption="Source: Spotify API",
+  fill = "Statistic                ") +
+  theme_vapor()
+
+ggplotly(p)
+```
+
+### Conclusion {data-commentary-width="400"}
+
+**The Question**
+
+yessir
+
+**The Answers**
+
+ff
+
+**Reflection**
+
+it worked poggers
+
+***
+
+**Bill Nye**
+
+And for that reason, im out
