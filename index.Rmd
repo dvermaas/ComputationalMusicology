@@ -876,9 +876,9 @@ subplot(ggplotly(p1, legend = FALSE), ggplotly(p2), nrows = 1, margin = 0.06, ti
   layout(title = '', showlegend = FALSE) %>%
   layout(annotations = 
            list(list(x = 0.15 , y = 1.05, text = "Most Important Features",
-                     showarrow = F, xref='paper', yref='paper'),
+                     showarrow = F, xref='paper', yref='paper', size = 22/.pt),
                 list(x = 0.85 , y = 1.05, text = "Random Forest Truth Table", 
-                     showarrow = F, xref='paper', yref='paper'))
+                     showarrow = F, xref='paper', yref='paper', size = 14/.pt))
   )
 ```
 
@@ -913,41 +913,34 @@ the best results with Carpenter Brut, which is likely due to the fact that it
 contrasts the most compared to the other artists. It also performs decent on 
 Jan Hammer and The Midnight. Downtown Binary and Home seem to be more difficult.
 
-```{r include=FALSE}
-# Convert to tidy format for plotting
-pr <- synth_forest %>% get_pr() %>% 
-  rename(Precision = precision, Recall = recall)%>% 
-  pivot_longer(c("Precision", "Recall"), names_to = "type", values_to = "percentage")
-
-p <- ggplot(pr, aes(class, percentage, fill = type)) + 
-  geom_bar(stat="identity", position = "dodge") + 
-  labs(
-  x="Artist",
-  y="Percentage",
-  title="Statistics per label",
-  caption="Source: Spotify API",
-  fill = "Statistic                ") +
-  theme_vapor()
-
-ggplotly(p)
-```
-
 ### Conclusion {data-commentary-width="400"}
 
-**The Question**
+**The Questions**
 
-yessir
+The goal of this corpus analysis was to test if subgenre detection within
+the synthwave genre would be possible. To test this five synthwave artists
+were selected that embody a subgenre. To test this we have used several
+music visualizations to compare the differences between the artists, to find
+features that may be significant when training a classifier.
 
 **The Answers**
 
-ff
+Many of the music visualizations have shown that while all artists belong in the
+synthwave genre, their songs are still distinct enough to be accurately distinguished
+between. The Loudness plot and the tempogram for example show clear differences between
+tracks of different artists.
 
-**Reflection**
+The Random Forrest classifier proofs the observations made throughout the weeks, many of the
+significant features are indeed those that were previously identified. The performance of the
+classifier is also incredible, implying that subgenre detection within the synthwave genre may
+be more possible then I expected.
 
-it worked poggers
+**Reflections**
+
+Internal validity etc.
 
 ***
 
-**Bill Nye**
+**Signing out**
 
-And for that reason, im out
+Thank you for reading my music analysis!
