@@ -1,5 +1,5 @@
 ---
-title: "Computational Musicology"
+title: "Scrutinizing Synthwave"
 author: "Daniël Vermaas"
 date: "`r Sys.Date()`"
 output: 
@@ -8,9 +8,14 @@ output:
     css: styles.css
     source_code: https://github.com/dvermaas/ComputationalMusicology
     self_contained: false
+
 ---
 
 ```{r setup, echo = FALSE}
+#    theme:
+#      bg: "#181818"
+#      fg: "#121212"
+#      navbar-bg: "#C70039"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -120,16 +125,20 @@ following subgenres:
 **What are the natural groups or comparison points in your corpus and
 what is expected between them?**
 
-I intend to divide the corpus based on subgenres within synthwave. These
-subgenres are similar to the subgenres within heavy metal, but likely a
-lot more subtle. It would therefore be interesting to see if these
-subgenres are actually detectable within the corpus. I personally do not
-think there are very significant differences between most of these
-subgenres, but we will see if the data agrees with that statement. I
-want to approach this by selecting five of the most different
-synthwave-artists I enjoy listening to, and by looking if these
-differences are perceivable by the music-visualization methods mentioned
-during the course.
+There are five artists in the corpus, each representing a synthwave subgerne.
+The natural point of comparison is therefore to analyse the differences between
+tracks of these different artists. I intend to explore what features are the best
+at showing the differences between the artists, and test how good classifiers can
+be at differentiating between artists that all have the synthwave genre
+in common.
+
+A secondary objective of this research is to see if subgenre detection is possible,
+which is why each artist has a different subgenre. This secondary objective is much
+more subjective. This is because unlike heavy metal, synthwave has much less agreed upon
+subgenres. I personally do not think there are very significant differences between most of 
+these subgenres, but we will see if the data agrees with that statement. The conclusions of 
+the secondary objective will be less objective, but I do think they will indicate if subgenre 
+detection is likely or unlikely to be possible.
 
 **How representative are the tracks in your corpus for the groups you
 want to compare?**
@@ -263,7 +272,7 @@ ggplotfix(ggplotly(p))
 
 ***
 
-```{=html}
+```{=html} 
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/1Zm2rsEmqIz8KaWLvtvWA3?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
 ```
 
@@ -297,7 +306,7 @@ that can be used to add additional dimensions to the data, so this result still 
 
 ```{r, echo = FALSE}
 p <- ggplot(corpus, aes(loudness, energy, label = track.name)) +
-  geom_point(data = corpus, alpha=.6, aes(size = loudness, color = artists.name)) +
+  geom_point(data = corpus, alpha=.6, aes(color = artists.name, size = 3)) +
   scale_fill_discrete() +
   geom_smooth(method = "lm", se = FALSE, color = "#2DE2E6") +
   labs(
@@ -359,7 +368,7 @@ dynamic_timewarp <- compmus_long_distance(
   geom_tile() +
   coord_equal() +
   labs(x = "Crockett's Theme - Jan Hammer", y = "Crockett's Theme (remaster) - Jan Hammer", 
-       title = "Dynamic Timewarp") +
+       title = "Dynamic Timewarp (chebyshev distance)") +
   theme_vapor() + 
   scale_fill_viridis_c(guide = NULL)
 
@@ -393,7 +402,13 @@ Therefore it is probably the perfect candidate for this comparison.
 **Analysis**
 
 The plot shows that the original and the remastered soundtrack are
-indeed very similar.
+indeed very similar. This is visible by the diagonal line in the plot. In some spots
+the diagonal line becomes less clear, like the first ten seconds of the plot.
+Here we see a more distorted checkerboard pattern. When listening to both tracks this
+difference is noticeable, primarily in volume. The overall structure of the song does
+not change, so this block is not fully distorted in the plot. The end of both tracks
+also feature similar distortion, which is not unexpected. The beginning and end of both
+tracks are very similar for each track.
 
 ### Self Similarity Matrix: Chroma and Timbre {data-commentary-width="400"}
 
@@ -504,33 +519,30 @@ grid.draw(gt)
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/65r94rVdiMwqXyQFEr3tqT?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
 ```
 
-**Turbo Killer Analysis**
+**About the tracks**
 
-I wanted to explore the song 'Turbo Killer' by 'Carpenter Brut'. This
-song really stands out for quick pacing and constantly building and
-escalating upon the previous 'verse'. The song gives a sense of
-progression or fast movement/speed, and that is probably why this is one
-of my favorite tracks in this corpus.
+I wanted to explore the song Turbo Killer by Carpenter Brut, which is one of my
+favorite tracks in the corpus. I believe this is due to the buildup and pacing that
+the track has. Resonance does not have any of these features, which would imply that the
+Self Similarity Matrices should be different.
+
+**Turbo Killer Analysis**
 
 When looking at the Chroma matrix we see a lot of tiny changes in the
 first forty seconds. Every seven-ish seconds there is a change. After 40
 seconds the song changes into high tempo guitar only, and the following
 blocks all add additional elements to this. The matrix turns out very
 interesting, because you can see how the song constantly builds up to
-more complexity.
-
-The Timbre matrix looks less interesting. There are no real verses, but
-you can tell where transitions to more complexity happen. What is very
-surprising is that the high point of the timbre matrix is at the end of
-the song.
+more complexity. The Timbre matrix looks less interesting. There are no real verses, 
+but you can tell where transitions to more complexity happen.
 
 **Resonance Analysis**
 
-yes
-
-**Comparing**
-
-dissimilar
+Resonance has a very noisy Chroma plot. It seems like the oscillation-like effect
+of synthwave really distorts the plot. The only clearly defined change happens at 140 seconds,
+where the grid like pattern becomes much less busy. When listening to the track you can hear that
+the track indeed calms down more. The Timbre matrix is however a lot cleaner. It captures the added
+'instrument' at 25 seconds and at 90 seconds.
 
 ### Chordogram {data-commentary-width="400"}
 
@@ -876,9 +888,9 @@ subplot(ggplotly(p1, legend = FALSE), ggplotly(p2), nrows = 1, margin = 0.06, ti
   layout(title = '', showlegend = FALSE) %>%
   layout(annotations = 
            list(list(x = 0.15 , y = 1.05, text = "Most Important Features",
-                     showarrow = F, xref='paper', yref='paper', size = 22/.pt),
+                     showarrow = F, xref='paper', yref='paper'),
                 list(x = 0.85 , y = 1.05, text = "Random Forest Truth Table", 
-                     showarrow = F, xref='paper', yref='paper', size = 14/.pt))
+                     showarrow = F, xref='paper', yref='paper'))
   )
 ```
 
@@ -896,7 +908,7 @@ that we train the model on 80% of the data and validate on the remaining
 in the validation partition once, giving a more honest non-cherry-picked
 representation of the results.
 
-**Important Features**
+**The Important Features**
 
 Loudness is the most important feature for the Random Forest Classifier when
 classifying the corpus. This is not fully blindsiding, because in the Linear Loudness
@@ -910,8 +922,8 @@ When interpreting the results, one should keep in mind that the maximum
 score is 20, since the corpus has 20 entries of each artist. It is obvious 
 that the Random Forest Classifier is very accurate when predicting artist. It achieves
 the best results with Carpenter Brut, which is likely due to the fact that it
-contrasts the most compared to the other artists. It also performs decent on 
-Jan Hammer and The Midnight. Downtown Binary and Home seem to be more difficult.
+contrasts the most compared to the other artists. It also performs great on all other artists.
+It seems to struggle the most with Home, but that is relatively speaking.
 
 ### Conclusion {data-commentary-width="400"}
 
@@ -928,19 +940,42 @@ features that may be significant when training a classifier.
 Many of the music visualizations have shown that while all artists belong in the
 synthwave genre, their songs are still distinct enough to be accurately distinguished
 between. The Loudness plot and the tempogram for example show clear differences between
-tracks of different artists.
+tracks of different artists. The Random Forrest classifier proofs the observations made throughout 
+the weeks, many of the significant features are indeed those that were previously identified.
 
-The Random Forrest classifier proofs the observations made throughout the weeks, many of the
-significant features are indeed those that were previously identified. The performance of the
-classifier is also incredible, implying that subgenre detection within the synthwave genre may
-be more possible then I expected.
+The secondary objective is harder to quantify. The performance of the classifier is also incredible,
+which is a good sign for subgenre detection. But it is likely too short-sighted to say that this means that
+subgenre detection within the Synthwave genre is possible.
+
+
+**Validity**
+
+I believe the internal validity of this research is adequate. The final corpus was especially designed to be great for
+comparisons. Therefore the experimentation and final classification worked great and should be satisfactory. A possible point of
+contention is the secondary objective. While the results clearly show great classification of artists, the same cannot truly be
+said about subgenre classification. Choosing one artist to represent each artist was fine as an experiment, but it obviously
+does not fully capture all variation within said subgenres. 
+
+The external validity may be harder to estimate. The primary objective of classifying artists worked great, but that
+may just be because these artists just happen to perform great. So to be more sure about external validity further research
+could explore different artists, which is easily done by changing the corpus playlist.
 
 **Reflections**
 
-Internal validity etc.
+In hindsight it would have been possible to increase the number of artists in the corpus. The original corpus was scrapped because
+of too much variety, but it appears the number of artists could definitely have been increased to ten instead of five. The new corpus
+is more of a dataset and does not really represent an organic playlist, which is a shame. I am very happy with how the overall theme of the 
+dashboard turned out. The colorpalette stays true to the Synthwave genre. The Intent was also to make the plot gridlines look like the 
+gridlines in the picture on the right, which worked out well.
 
 ***
+
+```{=html}
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/2jqJGN2R7YQ1MuZXOMt8YS?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+```
 
 **Signing out**
 
 Thank you for reading my music analysis!
+
+![](synthcity.jpg){width=100%}

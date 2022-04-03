@@ -1,12 +1,25 @@
 @font-face {
-    font-family: TTNorms;
-    src: url(TTNorms-ExtraBold.otf);
+  font-family: TTNorms;
+  src: url(TTNorms-ExtraBold.otf);
 }
 
-body {background-color: #181818;}
+body {
+  background-color: #181818;
+}
 
-strong {font-family: 'TTNorms';
-        color: #2DE2E6;
+strong {
+  font-family: 'TTNorms';
+  color: #2DE2E6;
+}
+
+a:hover{
+  background-color: #2DE2E6 !important;
+  border-color: #2DE2E6 !important;
+}
+
+button:hover{
+  background-color: #2DE2E6 !important;
+  border-color: #2DE2E6 !important;
 }
 
 .storyboard-nav .sbframelist ul li.active {
@@ -20,20 +33,18 @@ strong {font-family: 'TTNorms';
   color: #3a3c47;
 }
 
-.chart-wrapper-flex{background-color: #181818;
-                    border-color: #181818;
-                    color: #fff;
+.chart-wrapper-flex{
+  background-color: #181818;
+  border-color: #181818;
+  color: #fff;
 }
 
-.sbframe-commentary{background-color: #121212;
-                    border-color: #121212;
-                    color: #fff;
+.sbframe-commentary{
+  background-color: #121212;
+  border-color: #121212;
+  color: #fff;
 }
-/*
-#1ed760 greyish color
-#1ed760 spotify green
-background-position: right 50% bottom 0%;
-*/
+
 .storyboard-nav .sbframelist ul li {
   background-image: url("sunset.png");
   background-repeat: no-repeat;
