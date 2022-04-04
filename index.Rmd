@@ -104,8 +104,8 @@ electronic music microgenre that is based predominantly on the music
 associated with action, science-fiction, and horror film soundtracks of
 the 1980s. Other influences are drawn from the decade's art and video
 games. Synthwave musicians often espouse nostalgia for 1980s culture and
-attempt to capture the era's atmosphere and celebrate it. (from
-Wikipedia)
+attempt to capture the era's atmosphere and celebrate it (from
+Wikipedia).
 
 I chose this corpus because I am currently listening to a lot of
 synthwave music. I also listen to all my music on Spotify, so I can use
@@ -128,9 +128,8 @@ what is expected between them?**
 There are five artists in the corpus, each representing a synthwave subgerne.
 The natural point of comparison is therefore to analyse the differences between
 tracks of these different artists. I intend to explore what features are the best
-at showing the differences between the artists, and test how good classifiers can
-be at differentiating between artists that all have the synthwave genre
-in common.
+at showing the differences between the artists, and test if training a good performing
+classifier on labels within the same genre is possible.
 
 A secondary objective of this research is to see if subgenre detection is possible,
 which is why each artist has a different subgenre. This secondary objective is much
@@ -332,6 +331,12 @@ and fitted with a line afterwards. While there are definitely outliers, we do in
 features do indeed exhibit a linear relation. Spotify is not very open about how it determines
 it's feature values, but using this plot we do get more of an idea how energy is calculated.
 
+**Loudness as important feature**
+
+Beyond finding the linear relationship, the separation of artists in this plot also seems kind of good.
+The Midnight and Downtown Binary intersect a lot, but the other three artist(s) are decently separated.
+This would imply that loudness may be a more important feature than valence.
+
 ### Dynamic Time Warping {data-commentary-width="400"}
 
 ```{r, echo = FALSE}
@@ -391,18 +396,19 @@ grid.draw(gt)
 
 **Comparing original to remaster**
 
-Jan Hammer's most iconic soundtrack has to be 'Crockett's Theme' from
+Jan Hammer's most iconic soundtrack has to be Crockett's Theme from
 Miami Vice. Miami Vice is quite old now (originally aired in 1984), but
 Jan Hammer's work on the soundtrack is great, and went on to inspire a
 lot of the modern Synthwave artists. Jan Hammer recently (2018) released
-a remaster of 'Crockett's Theme' in the 'Special edition' album. I like
+a remaster of Crockett's Theme in the 'Special edition' album. I like
 this remaster better, but it is very subtly different from the original.
 Therefore it is probably the perfect candidate for this comparison.
 
 **Analysis**
 
 The plot shows that the original and the remastered soundtrack are
-indeed very similar. This is visible by the diagonal line in the plot. In some spots
+indeed very similar. This is visible by the diagonal line in the plot. Both tracks have very
+similar structure and duration, so this makes sense. In some spots
 the diagonal line becomes less clear, like the first ten seconds of the plot.
 Here we see a more distorted checkerboard pattern. When listening to both tracks this
 difference is noticeable, primarily in volume. The overall structure of the song does
@@ -792,7 +798,7 @@ when the main parts of both songs happen the BPM line becomes very sharp
 and accurate. Average BPM seems to be a reasonable and usable statistic
 to differentiate between Carpenter Brut and Downtown Binary.
 
-### Machine Learning using KNN {data-commentary-width="400"}
+### Machine Learning using Random Forest {data-commentary-width="400"}
 
 ```{r echo=FALSE}
 indie_features <-
@@ -914,36 +920,41 @@ Loudness is the most important feature for the Random Forest Classifier when
 classifying the corpus. This is not fully blindsiding, because in the Linear Loudness
 plot we already saw great separation between the labels. Timbre feature #1, which also
 represents loudness, is second. It is eye-opening that energy and valence are reasonably
-low, I did expect these features to be greater descriptors of the labels.
+low, I did expect these features to be greater descriptors of the labels. Duration is also quite
+an interesting metric to train on. One would expect duration to not tell much about the music,
+but when looking trough the corpus each artist does seem to have similar track lengths for all their
+tracks.
 
 **Results**
 
 When interpreting the results, one should keep in mind that the maximum
 score is 20, since the corpus has 20 entries of each artist. It is obvious 
-that the Random Forest Classifier is very accurate when predicting artist. It achieves
+that the Random Forest Classifier is very accurate when predicting artists. It achieves
 the best results with Carpenter Brut, which is likely due to the fact that it
-contrasts the most compared to the other artists. It also performs great on all other artists.
-It seems to struggle the most with Home, but that is relatively speaking.
+contrasts the most compared to the other artists. The classifier has some randomness each time the underlying code is ran,
+so there is some variance. But on average the classifier performs beyond expectation on all artists.
+
 
 ### Conclusion {data-commentary-width="400"}
 
 **The Questions**
 
-The goal of this corpus analysis was to test if subgenre detection within
-the synthwave genre would be possible. To test this five synthwave artists
-were selected that embody a subgenre. To test this we have used several
-music visualizations to compare the differences between the artists, to find
-features that may be significant when training a classifier.
+The goal of this corpus analysis was to see if classifying artists that are within
+the Synthwave genre would be effective. A side objective to this was seeing if subgenre
+detection within the Synthwave genre may be possible. To test this five synthwave artists
+were selected that embody a subgenre. several music visualizations were used to analyse and
+compare the differences between the artists, to find features that may be significant when 
+training a classifier.
 
 **The Answers**
 
 Many of the music visualizations have shown that while all artists belong in the
 synthwave genre, their songs are still distinct enough to be accurately distinguished
 between. The Loudness plot and the tempogram for example show clear differences between
-tracks of different artists. The Random Forrest classifier proofs the observations made throughout 
-the weeks, many of the significant features are indeed those that were previously identified.
+tracks of different artists. The Random Forrest classifier proves that the observations made throughout 
+the weeks had merit. Many of the significant features are indeed those that were previously identified.
 
-The secondary objective is harder to quantify. The performance of the classifier is also incredible,
+The secondary objective is harder to quantify. The performance of the classifier is incredible,
 which is a good sign for subgenre detection. But it is likely too short-sighted to say that this means that
 subgenre detection within the Synthwave genre is possible.
 
@@ -951,10 +962,10 @@ subgenre detection within the Synthwave genre is possible.
 **Validity**
 
 I believe the internal validity of this research is adequate. The final corpus was especially designed to be great for
-comparisons. Therefore the experimentation and final classification worked great and should be satisfactory. A possible point of
-contention is the secondary objective. While the results clearly show great classification of artists, the same cannot truly be
-said about subgenre classification. Choosing one artist to represent each artist was fine as an experiment, but it obviously
-does not fully capture all variation within said subgenres. 
+comparisons. Therefore the experimentation and final classification worked great and should be satisfactory. A possible 
+point of contention is the secondary objective. While the results clearly show great classification of artists, the same 
+cannot truly be said about subgenre classification. Choosing one artist to represent each artist was fine as an first experiment, 
+but it obviously does not fully capture all variation within said subgenres.
 
 The external validity may be harder to estimate. The primary objective of classifying artists worked great, but that
 may just be because these artists just happen to perform great. So to be more sure about external validity further research
@@ -974,8 +985,10 @@ gridlines in the picture on the right, which worked out well.
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/2jqJGN2R7YQ1MuZXOMt8YS?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
 ```
 
+![](synthcity.jpg){width=100%}
+
 **Signing out**
 
 Thank you for reading my music analysis!
 
-![](synthcity.jpg){width=100%}
+
