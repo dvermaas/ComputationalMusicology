@@ -32,4 +32,4 @@ Turbo Killer by Carpenter Brut is one atypical outlier. It is by far the most in
 
 **Source & Reproducibility**
 
-The whole project uses Spotify API as the source, and by hitting the Github "Source code" button, all code used to generate all visualizations can be verified on accuracy and methodology. The compmus package can be installed like this: remotes::install_github('jaburgoyne/compmus')
+The whole project uses Spotify API as the source, and by hitting the Github "Source code" button, all code used to generate all visualizations can be verified on accuracy and methodology. The compmus package can be installed like this:  "remotes::install_github('jaburgoyne/compmus')"
